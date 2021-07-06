@@ -10,6 +10,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "jira-dev-tool": "1.7.61",
     "qs": "^6.10.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -22,8 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "husky install",
-    "json-server": "json-server --watch --port 8080 __json_server_mock__/db.json  --middlewares ./__json_server_mock__/middleware.js"
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
