@@ -1,13 +1,14 @@
 import React from "react";
+// import { ProjectListPage } from "./pages/ProjectList";
 import "./App.css";
-import { ProjectListPage } from "./pages/ProjectList";
-import { LoginPage } from "./pages/Login";
-
+import { useAuth } from "./context/AuthContext";
+import { AuthenticatedApp } from "./AuthenticatedApp";
+import { UnauthenticatedApp } from "./UnauthenticatedApp";
 function App() {
+  const { user } = useAuth();
   return (
     <div className="App">
-      {/*<ProjectListPage />*/}
-      <LoginPage />
+      {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
     </div>
   );
 }
