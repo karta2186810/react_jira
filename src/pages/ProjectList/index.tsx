@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { cleanObj, useMount, useDebounce } from "../../utils";
 import { useHttp } from "../../utils/http";
 
-const apiUrl = process.env.REACT_APP_API_URL;
-
 export const ProjectListPage = () => {
   const [param, setParam] = useState({
     name: "",

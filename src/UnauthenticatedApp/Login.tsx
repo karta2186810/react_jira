@@ -1,9 +1,9 @@
-import React, { FormEvent } from "react";
+import React from "react";
 import { useAuth } from "../context/AuthContext";
-import { Form, Input, Button } from "antd";
+import { Form, Input } from "antd";
 import { LongButton } from "./index";
 export const LoginPage = () => {
-  const { user, login } = useAuth();
+  const { login } = useAuth();
   const handleSubmit = (values: { username: string; password: string }) => {
     login(values);
   };
