@@ -1,8 +1,6 @@
 import { SearchPanel } from "./SearchPanel";
 import { List } from "./List";
 import { useEffect, useState } from "react";
-// 在obj和query間相互轉換
-import qs from "qs";
 import { cleanObj, useMount, useDebounce } from "../../utils";
 import { useHttp } from "../../utils/http";
 

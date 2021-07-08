@@ -1,30 +1,31 @@
 import React, { FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
-
+import { Form, Input, Button } from "antd";
+import { LongButton } from "./index";
 export const LoginPage = () => {
   const { user, login } = useAuth();
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const username = (e.currentTarget.elements[0] as HTMLInputElement).value;
-    const password = (e.currentTarget.elements[1] as HTMLInputElement).value;
-    login({ username, password });
+  const handleSubmit = (values: { username: string; password: string }) => {
+    login(values);
   };
   return (
-    <form onSubmit={handleSubmit}>
-      {user ? (
-        <div>
-          登入成功，用戶名 {user?.name} <br /> token: {user?.token}
-        </div>
-      ) : null}
-      <div>
-        <label htmlFor="username">用戶名</label>
-        <input type="text" id={"username"} />
-      </div>
-      <div>
-        <label htmlFor="password">密碼</label>
-        <input type="text" id={"password"} />
-      </div>
-      <button type={"submit"}>登入</button>
-    </form>
+    <Form onFinish={handleSubmit}>
+      <Form.Item
+        name={"username"}
+        rules={[{ required: true, message: "用戶名不能為空" }]}
+      >
+        <Input type="text" id={"username"} placeholder={"用戶名"} />
+      </Form.Item>
+      <Form.Item
+        name={"password"}
+        rules={[{ required: true, message: "密碼不能為空" }]}
+      >
+        <Input type="text" id={"password"} placeholder={"密碼"} />
+      </Form.Item>
+      <Form.Item>
+        <LongButton htmlType={"submit"} type={"primary"}>
+          登入
+        </LongButton>
+      </Form.Item>
+    </Form>
   );
 };

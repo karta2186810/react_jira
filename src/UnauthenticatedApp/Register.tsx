@@ -1,25 +1,31 @@
 import React, { FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
-
+import { Button, Form, Input } from "antd";
+import { LongButton } from "./index";
 export const RegisterPage = () => {
   const { user, register } = useAuth();
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const username = (e.currentTarget.elements[0] as HTMLInputElement).value;
-    const password = (e.currentTarget.elements[1] as HTMLInputElement).value;
-    register({ username, password });
+  const handleSubmit = (values: { username: string; password: string }) => {
+    register(values);
   };
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">用戶名</label>
-        <input type="text" id={"username"} />
-      </div>
-      <div>
-        <label htmlFor="password">密碼</label>
-        <input type="text" id={"password"} />
-      </div>
-      <button type={"submit"}>註冊</button>
-    </form>
+    <Form onFinish={handleSubmit}>
+      <Form.Item
+        name={"username"}
+        rules={[{ required: true, message: "用戶名不能為空" }]}
+      >
+        <Input type="text" id={"username"} placeholder={"用戶名"} />
+      </Form.Item>
+      <Form.Item
+        name={"password"}
+        rules={[{ required: true, message: "密碼不能為空" }]}
+      >
+        <Input type="text" id={"password"} placeholder={"密碼"} />
+      </Form.Item>
+      <Form.Item>
+        <LongButton htmlType={"submit"} type={"primary"}>
+          註冊
+        </LongButton>
+      </Form.Item>
+    </Form>
   );
 };
