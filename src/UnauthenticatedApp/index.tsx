@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { RegisterPage } from "./Register";
 import { LoginPage } from "./Login";
-import { Button, Card, Divider } from "antd";
+import { Button, Card, Divider, Typography } from "antd";
 import styled from "@emotion/styled";
 import logo from "assets/logo.svg";
 import left from "assets/left.svg";
@@ -10,21 +10,33 @@ import right from "assets/right.svg";
 /* Component */
 export const UnauthenticatedApp = () => {
   const [isRegister, setIsRegister] = useState(false);
+  const [error, setError] = useState<null | Error>(null);
   return (
     <Container>
       <Background />
       <Header />
       <ShadowCard>
-        <Title>{isRegister ? "登入" : "註冊"}</Title>
-        {isRegister ? <LoginPage /> : <RegisterPage />}
+        <Title>{isRegister ? "註冊" : "登入"}</Title>
+        {error ? (
+          <Typography.Text type={"danger"}>{error.message}</Typography.Text>
+        ) : null}
+        {isRegister ? (
+          <RegisterPage onError={setError} />
+        ) : (
+          <LoginPage onError={setError} />
+        )}
         <Divider />
-        {isRegister ? "還沒有帳號?" : "已經有帳號?"} &nbsp;
-        <a
-          onClick={() => setIsRegister(!isRegister)}
+        {isRegister ? "已經有帳號?" : "還沒有帳號?"} &nbsp;
+        <Button
+          onClick={() => {
+            setIsRegister(!isRegister);
+            setError(null);
+          }}
+          type={"link"}
           style={{ userSelect: "none" }}
         >
-          {isRegister ? "註冊新帳號" : "直接登入"}
-        </a>
+          {isRegister ? "直接登入" : "註冊新帳號"}
+        </Button>
       </ShadowCard>
     </Container>
   );

@@ -1,17 +1,18 @@
-// 判斷是否為 0
 import { useEffect, useState } from "react";
 
-export const isTruesy = (value: unknown) => (value === 0 ? true : !!value);
+// 判斷是否為 0
+export const isFalsy = (value: unknown) => (value === 0 ? true : !value);
+// 判斷是否為無意義的值
+export const isVoid = (value: unknown) =>
+  value === undefined || value === null || value === "";
 
-// 清除物件中值為空的鍵
-export const cleanObj = (obj: object) => {
+// 清除物件中無意義值的鍵，以便於qs進行轉換
+export const cleanObj = (obj: { [key: string]: unknown }) => {
   // immutable
   const result = { ...obj };
   Object.keys(result).forEach((key) => {
-    // @ts-ignore
     const value = result[key];
-    if (!isTruesy(value)) {
-      // @ts-ignore
+    if (isVoid(value)) {
       delete result[key];
     }
   });

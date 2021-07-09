@@ -1,6 +1,5 @@
-/*
- * AJAX的util
- * */
+/** AJAX的util函數 */
+
 import qs from "qs";
 import * as auth from "auth-prodiver";
 import { useAuth } from "../context/AuthContext";
@@ -33,7 +32,7 @@ export const http = async (
     .then(async (response) => {
       if (response.status === 401) {
         await auth.logout();
-        window.location.reload(); // 刷新網頁，保險用，確保所有狀態都被清理
+        window.location.reload(); // 刷新網頁，確保所有狀態都被清理
         return Promise.reject({ message: "請重新登入" });
       }
       const data = await response.json();

@@ -1,31 +1,34 @@
+import styled from "@emotion/styled";
 import { SearchPanel } from "./SearchPanel";
 import { List } from "./List";
-import { useEffect, useState } from "react";
-import { cleanObj, useMount, useDebounce } from "../../utils";
-import { useHttp } from "../../utils/http";
+import { useState } from "react";
+import { useDebounce } from "../../utils";
+import { Typography } from "antd";
+import { useProjects } from "../../utils/projects";
+import { useUsers } from "../../utils/user";
 
 export const ProjectListPage = () => {
-  const [param, setParam] = useState({
-    name: "",
-    personId: "",
-  });
-  const [list, setList] = useState([]);
-  const [users, setUsers] = useState([]);
+  // SearchPanel輸入的搜尋參數
+  const [param, setParam] = useState({ name: "", personId: "" });
   const debounceParam = useDebounce(param, 200);
-  const client = useHttp();
 
-  useEffect(() => {
-    client("projects", { data: cleanObj(debounceParam) }).then(setList);
-  }, [debounceParam]);
-
-  useMount(() => {
-    client("users").then(setUsers);
-  });
+  // 獲取 users 和 list 數據
+  const { data: list, isLoading, error } = useProjects(debounceParam);
+  const { data: users } = useUsers();
 
   return (
-    <div>
-      <SearchPanel param={param} setParam={setParam} users={users} />
-      <List list={list} users={users} />
-    </div>
+    <Container>
+      <h1>項目列表</h1>
+      <SearchPanel param={param} setParam={setParam} users={users || []} />
+      {error ? (
+        <Typography.Text type={"danger"}>{error.message}</Typography.Text>
+      ) : null}
+      <List loading={isLoading} dataSource={list || []} users={users || []} />
+    </Container>
   );
 };
+
+/* CSS */
+const Container = styled.div`
+  padding: 3.2rem;
+`;

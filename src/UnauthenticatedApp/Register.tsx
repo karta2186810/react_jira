@@ -2,10 +2,32 @@ import React from "react";
 import { useAuth } from "../context/AuthContext";
 import { Form, Input } from "antd";
 import { LongButton } from "./index";
-export const RegisterPage = () => {
+import { useAsync } from "../utils/use-async";
+
+export const RegisterPage = ({
+  onError,
+}: {
+  onError: (error: Error) => void;
+}) => {
   const { register } = useAuth();
-  const handleSubmit = (values: { username: string; password: string }) => {
-    register(values);
+  const { run, isLoading } = useAsync(undefined, { throwOnError: true });
+  const handleSubmit = async ({
+    cpassword,
+    ...values
+  }: {
+    username: string;
+    password: string;
+    cpassword: string;
+  }) => {
+    if (cpassword !== values.password) {
+      onError(new Error("密碼與確認密碼不相同"));
+      return;
+    }
+    try {
+      await run(register(values));
+    } catch (e) {
+      onError(e);
+    }
   };
   return (
     <Form onFinish={handleSubmit}>
@@ -21,8 +43,14 @@ export const RegisterPage = () => {
       >
         <Input type="text" id={"password"} placeholder={"密碼"} />
       </Form.Item>
+      <Form.Item
+        name={"cpassword"}
+        rules={[{ required: true, message: "請輸入確認密碼" }]}
+      >
+        <Input type="text" id={"cpassword"} placeholder={"確認密碼"} />
+      </Form.Item>
       <Form.Item>
-        <LongButton htmlType={"submit"} type={"primary"}>
+        <LongButton loading={isLoading} htmlType={"submit"} type={"primary"}>
           註冊
         </LongButton>
       </Form.Item>
