@@ -3,6 +3,7 @@
  * */
 import { useState } from "react";
 
+// 狀態的介面
 interface State<T> {
   error: Error | null;
   data: T | null;
@@ -29,11 +30,13 @@ export const useAsync = <T>(
     ...defaultConfig,
     ...initialConfig,
   };
+
   // 初始化狀態
   const [state, setState] = useState<State<T>>({
     ...defaultInitialState,
     ...initialState,
   });
+
   // 請求成功時，設置data
   const setData = (data: T) =>
     setState({
@@ -41,6 +44,7 @@ export const useAsync = <T>(
       status: "success",
       error: null,
     });
+
   // 請求失敗時，設置error
   const setError = (error: Error) =>
     setState({
@@ -49,13 +53,15 @@ export const useAsync = <T>(
       status: "error",
     });
 
-  // run 用來觸發異步請求
+  // run函數，用來觸發異步請求
   const run = (promise: Promise<T>) => {
     // 如果沒有傳入參數，或參數不是Promise物件，返回警告
     if (!promise || !promise.then) {
       throw new Error("請傳入 Promise 類型的數據");
     }
+    // 設置狀態為loading
     setState({ ...state, status: "loading" });
+
     return promise
       .then((data) => {
         setData(data);

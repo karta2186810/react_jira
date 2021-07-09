@@ -1,4 +1,6 @@
+/* 工具組件 */
 import styled from "@emotion/styled";
+import { Spin, Typography } from "antd";
 
 export const Row = styled.div<{
   gap?: number | boolean;
@@ -20,3 +22,27 @@ export const Row = styled.div<{
         : undefined};
   }
 `;
+
+const FullPage = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+// 全畫面Loading組件
+export const FullPageLoading = () => {
+  return (
+    <FullPage>
+      <Spin size={"large"} />
+    </FullPage>
+  );
+};
+
+export const FullPageErrorFallback = ({ error }: { error: Error | null }) => {
+  return (
+    <FullPage>
+      <Typography.Text type={"danger"}>{error?.message}</Typography.Text>
+    </FullPage>
+  );
+};

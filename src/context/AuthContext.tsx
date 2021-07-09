@@ -6,6 +6,10 @@ import * as auth from "auth-prodiver";
 import { User } from "../pages/ProjectList/SearchPanel";
 import { http } from "../utils/http";
 import { useMount } from "../utils";
+import { useAsync } from "../utils/use-async";
+import { FullPageErrorFallback, FullPageLoading } from "../components/lib";
+import { DevTools } from "jira-dev-tool";
+
 // 表單內容的interface
 interface AuthForm {
   username: string;
@@ -37,15 +41,42 @@ const boostrapUser = async () => {
 
 // AuthProvider Component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  // point free
+  // 初始化含有loading、error、data訊息的狀態
+  const {
+    data: user,
+    setData: setUser,
+    error,
+    isError,
+    isLoading,
+    isIdle,
+    run,
+  } = useAsync<User | null>();
+
+  // 發送Auth有關的請求，並設置AuthContext的狀態
   const login = (form: AuthForm) => auth.login(form).then(setUser);
   const register = (form: AuthForm) => auth.register(form).then(setUser);
   const logout = () => auth.logout().then(() => setUser(null));
 
+  // 嘗試從localStorage取得token，並向 '/me' 發送請求
   useMount(() => {
-    boostrapUser().then(setUser);
+    run(boostrapUser());
   });
+
+  // 在請求成功返回之前，返回全畫面Loading組件
+  if (isIdle || isLoading) {
+    return <FullPageLoading />;
+  }
+
+  // 如果出錯，返回錯誤頁面
+  if (isError) {
+    return (
+      <div>
+        <DevTools />
+        <FullPageErrorFallback error={error} />
+      </div>
+    );
+  }
+
   return (
     <AuthContext.Provider
       children={children}
@@ -54,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Auth hook
+// 取得 AuthContext 的 hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
