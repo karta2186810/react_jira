@@ -11,6 +11,7 @@ import right from "assets/right.svg";
 export const UnauthenticatedApp = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState<null | Error>(null);
+
   return (
     <Container>
       <Background />

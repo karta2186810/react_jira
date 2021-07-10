@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // 判斷是否為 0
 export const isFalsy = (value: unknown) => (value === 0 ? true : !value);
@@ -49,4 +49,19 @@ export const useArray = <T>(initialArray: T[]) => {
       setValue(copy.splice(index, 1));
     },
   };
+};
+
+export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
+  const oldTitle = useRef(document.title).current;
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
+  useEffect(() => {
+    return () => {
+      if (!keepOnUnmount) {
+        document.title = oldTitle;
+      }
+    };
+  }, [keepOnUnmount, oldTitle]);
 };

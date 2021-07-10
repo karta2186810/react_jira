@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { SearchPanel } from "./SearchPanel";
 import { List } from "./List";
 import { useState } from "react";
-import { useDebounce } from "../../utils";
+import { useDebounce, useDocumentTitle } from "../../utils";
 import { Typography } from "antd";
 import { useProjects } from "../../utils/projects";
 import { useUsers } from "../../utils/user";
@@ -15,6 +15,8 @@ export const ProjectListPage = () => {
   // 獲取 users 和 list 數據
   const { data: list, isLoading, error } = useProjects(debounceParam);
   const { data: users } = useUsers();
+
+  useDocumentTitle("項目列表", false);
 
   return (
     <Container>
