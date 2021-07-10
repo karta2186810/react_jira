@@ -51,6 +51,7 @@ export const useArray = <T>(initialArray: T[]) => {
   };
 };
 
+// 用於動態變更title的hook
 export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
   const oldTitle = useRef(document.title).current;
   useEffect(() => {
@@ -65,3 +66,6 @@ export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
     };
   }, [keepOnUnmount, oldTitle]);
 };
+
+// 用於重製路由狀態的函數
+export const resetRoute = () => (window.location.href = window.location.origin);
