@@ -53,7 +53,9 @@ export const useArray = <T>(initialArray: T[]) => {
 
 // 用於動態變更title的hook
 export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
+  // 使用ref將原始的路徑儲存
   const oldTitle = useRef(document.title).current;
+
   useEffect(() => {
     document.title = title;
   }, [title]);

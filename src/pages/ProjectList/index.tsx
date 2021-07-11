@@ -6,20 +6,18 @@ import { useDebounce, useDocumentTitle } from "../../utils";
 import { Typography } from "antd";
 import { useProjects } from "../../utils/projects";
 import { useUsers } from "../../utils/user";
-import { useUrlQueryParam } from "../../utils/url";
+import { useProjectsSearchParams } from "./util";
 
 export const ProjectListPage = () => {
-  // 獲取URL中的參數，和改變URL參數的方法
-  const [param, setParam] = useUrlQueryParam(["name", "personId"]);
-  // 防抖
-  const debounceParam = useDebounce(param, 200);
-
-  // 發送AJAX請求，獲取users 和 list 數據
-  const { data: list, isLoading, error } = useProjects(debounceParam);
-  const { data: users } = useUsers();
-
   // 變更title
   useDocumentTitle("項目列表", false);
+
+  // 通過url獲取狀態參數，並將返回物件中的personId轉換成數字
+  const [param, setParam] = useProjectsSearchParams();
+
+  // 發送AJAX請求，獲取users 和 list 數據
+  const { data: list, isLoading, error } = useProjects(useDebounce(param, 200));
+  const { data: users } = useUsers();
 
   return (
     <Container>

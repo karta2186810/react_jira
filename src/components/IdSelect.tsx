@@ -29,7 +29,7 @@ export const IdSelect = (props: IdSelectProps) => {
   return (
     <Select
       {...restProps}
-      value={toNumber(value)}
+      value={options?.length ? toNumber(value) : 0}
       // antd的onChange會自動接收到value不用再展開
       onChange={(value) => onChange(toNumber(value) || undefined)}
     >
