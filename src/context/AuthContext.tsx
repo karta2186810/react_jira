@@ -1,7 +1,7 @@
 /*
  * 控制登入註冊的context和操作該context的hook
  * */
-import React, { useContext, useState, ReactNode } from "react";
+import React, { useContext, ReactNode } from "react";
 import * as auth from "auth-prodiver";
 import { User } from "../pages/ProjectList/SearchPanel";
 import { http } from "../utils/http";

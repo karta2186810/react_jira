@@ -9,6 +9,8 @@ interface Config extends RequestInit {
   token?: string;
   data?: object;
 }
+
+// 接收地址及參數發送AJAX請求的函數
 export const http = async (
   endpoint: string,
   { data, token, headers, ...customConfig }: Config = {}
@@ -27,9 +29,11 @@ export const http = async (
   } else {
     config.body = JSON.stringify(data || {});
   }
+  // 返回請求的結果
   return window
     .fetch(`${apiUrl}/${endpoint}`, config)
     .then(async (response) => {
+      // 如果請求不通過
       if (response.status === 401) {
         await auth.logout();
         window.location.reload(); // 刷新網頁，確保所有狀態都被清理
