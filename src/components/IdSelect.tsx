@@ -5,7 +5,7 @@ import { Raw } from "../types";
 // 透過React.ComponentProps取得組件會接收的所有props的類型
 type SelectProps = React.ComponentProps<typeof Select>;
 
-// 將SelectProps中所有與自訂類型重名的屬性刪除
+// 將SelectProps中所有與自訂類型重名的屬性刪除，否則會造成衝突
 interface IdSelectProps
   extends Omit<
     SelectProps,
@@ -21,8 +21,11 @@ interface IdSelectProps
 const toNumber = (value: unknown) => (isNaN(Number(value)) ? 0 : Number(value));
 
 /*
- * 自定義select組件
- *
+ * 自定義select組件:
+ * - 可以接收任何類型的value
+ * - onChange的回調函數的參數指會接收到number類型或undefined
+ * - defaultOptionName作為默認選項的名字
+ * - options為自訂的選項
  * */
 export const IdSelect = (props: IdSelectProps) => {
   const { value, onChange, defaultOptionName, options, ...restProps } = props;

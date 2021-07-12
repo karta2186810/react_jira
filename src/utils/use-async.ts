@@ -37,6 +37,8 @@ export const useAsync = <T>(
     ...initialState,
   });
 
+  const [retry, setRetry] = useState(() => () => {});
+
   // 請求成功時，設置data
   const setData = (data: T) =>
     setState({
@@ -53,14 +55,23 @@ export const useAsync = <T>(
       status: "error",
     });
 
-  // run函數，用來觸發異步請求
-  const run = (promise: Promise<T>) => {
+  // 異步請求，並根據情況改變狀態
+  const run = (
+    promise: Promise<T>,
+    runConfig?: { retry: () => Promise<T> }
+  ) => {
     // 如果沒有傳入參數，或參數不是Promise物件，返回警告
     if (!promise || !promise.then) {
       throw new Error("請傳入 Promise 類型的數據");
     }
     // 設置狀態為loading
     setState({ ...state, status: "loading" });
+
+    setRetry(() => () => {
+      if (runConfig?.retry) {
+        run(runConfig?.retry(), runConfig);
+      }
+    });
 
     return promise
       .then((data) => {
@@ -83,6 +94,7 @@ export const useAsync = <T>(
     run,
     setData,
     setError,
+    retry,
     ...state,
   };
 };

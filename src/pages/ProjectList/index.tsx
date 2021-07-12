@@ -3,7 +3,7 @@ import { SearchPanel } from "./SearchPanel";
 import { List } from "./List";
 // import { useState } from "react";
 import { useDebounce, useDocumentTitle } from "../../utils";
-import { Typography } from "antd";
+import { Button, Typography } from "antd";
 import { useProjects } from "../../utils/projects";
 import { useUsers } from "../../utils/user";
 import { useProjectsSearchParams } from "./util";
@@ -16,22 +16,33 @@ export const ProjectListPage = () => {
   const [param, setParam] = useProjectsSearchParams();
 
   // 發送AJAX請求，獲取users 和 list 數據
-  const { data: list, isLoading, error } = useProjects(useDebounce(param, 200));
+  const {
+    data: list,
+    retry,
+    isLoading,
+    error,
+  } = useProjects(useDebounce(param, 200));
   const { data: users } = useUsers();
 
   return (
     <Container>
+      <Button onClick={retry}>retry</Button>
       <h1>項目列表</h1>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? (
         <Typography.Text type={"danger"}>{error.message}</Typography.Text>
       ) : null}
-      <List loading={isLoading} dataSource={list || []} users={users || []} />
+      <List
+        refresh={retry}
+        loading={isLoading}
+        dataSource={list || []}
+        users={users || []}
+      />
     </Container>
   );
 };
 
-// ProjectListPage.whyDidYouRender = true
+ProjectListPage.whyDidYouRender = true;
 
 /* CSS */
 const Container = styled.div`
