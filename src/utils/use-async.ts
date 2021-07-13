@@ -1,7 +1,8 @@
 /*
  * 用於異步獲取數據，並返回數據和請求狀態的鉤子
  * */
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useMountedRef } from "./index";
 
 // 狀態的介面
 interface State<T> {
@@ -30,61 +31,69 @@ export const useAsync = <T>(
     ...defaultConfig,
     ...initialConfig,
   };
-
   // 初始化狀態
   const [state, setState] = useState<State<T>>({
     ...defaultInitialState,
     ...initialState,
   });
-
   const [retry, setRetry] = useState(() => () => {});
+  // 用於判斷組件狀態的鉤子
+  const mountedRef = useMountedRef();
 
   // 請求成功時，設置data
-  const setData = (data: T) =>
-    setState({
-      data,
-      status: "success",
-      error: null,
-    });
+  const setData = useCallback(
+    (data: T) =>
+      setState({
+        data,
+        status: "success",
+        error: null,
+      }),
+    []
+  );
 
   // 請求失敗時，設置error
-  const setError = (error: Error) =>
-    setState({
-      error,
-      data: null,
-      status: "error",
-    });
+  const setError = useCallback(
+    (error: Error) =>
+      setState({
+        error,
+        data: null,
+        status: "error",
+      }),
+    []
+  );
 
   // 異步請求，並根據情況改變狀態
-  const run = (
-    promise: Promise<T>,
-    runConfig?: { retry: () => Promise<T> }
-  ) => {
-    // 如果沒有傳入參數，或參數不是Promise物件，返回警告
-    if (!promise || !promise.then) {
-      throw new Error("請傳入 Promise 類型的數據");
-    }
-    // 設置狀態為loading
-    setState({ ...state, status: "loading" });
-
-    setRetry(() => () => {
-      if (runConfig?.retry) {
-        run(runConfig?.retry(), runConfig);
+  const run = useCallback(
+    (promise: Promise<T>, runConfig?: { retry: () => Promise<T> }) => {
+      // 如果沒有傳入參數，或參數不是Promise物件，返回警告
+      if (!promise || !promise.then) {
+        throw new Error("請傳入 Promise 類型的數據");
       }
-    });
+      // 設置狀態為loading
+      setState((prevState) => ({ ...prevState, status: "loading" }));
 
-    return promise
-      .then((data) => {
-        setData(data);
-        return data;
-      })
-      .catch((error) => {
-        setError(error);
-        // catch會消化異常，如果需要外部也可以接收到異常，需手動拋出
-        if (config.throwOnError) return Promise.reject(error);
-        return error;
+      // 每次執行run時，就將這次的請求函數設置給retry
+      setRetry(() => () => {
+        if (runConfig?.retry) {
+          run(runConfig?.retry(), runConfig);
+        }
       });
-  };
+
+      return promise
+        .then((data) => {
+          // 只有當組件正在掛載狀態，才進行setData
+          if (mountedRef.current) setData(data);
+          return data;
+        })
+        .catch((error) => {
+          setError(error);
+          // catch會消化異常，如果需要外部也可以接收到異常，需手動拋出
+          if (config.throwOnError) return Promise.reject(error);
+          return error;
+        });
+    },
+    [config.throwOnError, mountedRef, setData, setError]
+  );
 
   return {
     isIdle: state.status === "idle",

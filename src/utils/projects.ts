@@ -1,7 +1,7 @@
 /* 與project相關的工具函數 */
 import { useAsync } from "./use-async";
 import { Project } from "../pages/ProjectList/List";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { cleanObj } from "./index";
 import { useHttp } from "./http";
 
@@ -10,13 +10,15 @@ export const useProjects = (param: Partial<Project>) => {
   const client = useHttp();
   const { run, ...result } = useAsync<Project[]>();
 
-  const fetchProjects = () => client("projects", { data: cleanObj(param) });
+  const fetchProjects = useCallback(
+    () => client("projects", { data: cleanObj(param) }),
+    [param, client]
+  );
 
   // 發送請求
   useEffect(() => {
     run(fetchProjects(), { retry: fetchProjects });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [param]);
+  }, [param, run, fetchProjects]);
   return result;
 };
 

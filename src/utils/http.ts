@@ -3,6 +3,7 @@
 import qs from "qs";
 import * as auth from "auth-prodiver";
 import { useAuth } from "../context/AuthContext";
+import { useCallback } from "react";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 interface Config extends RequestInit {
@@ -51,6 +52,9 @@ export const http = async (
 // useHttp根據user中的狀態，返回含有token的AJAX函數
 export const useHttp = () => {
   const { user } = useAuth();
-  return (...[endpoint, config]: Parameters<typeof http>) =>
-    http(endpoint, { ...config, token: user?.token });
+  return useCallback(
+    (...[endpoint, config]: Parameters<typeof http>) =>
+      http(endpoint, { ...config, token: user?.token }),
+    [user?.token]
+  );
 };

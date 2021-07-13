@@ -71,3 +71,17 @@ export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
 
 // 用於重製路由狀態的函數
 export const resetRoute = () => (window.location.href = window.location.origin);
+
+// 返回組件的掛載狀態，如果尚未掛載或已卸載，返回false，否則返回true
+export const useMountedRef = () => {
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    // 掛載時為true
+    mountedRef.current = true;
+    return () => {
+      // 卸載時為false
+      mountedRef.current = false;
+    };
+  });
+  return mountedRef;
+};

@@ -42,7 +42,7 @@ export const ProjectListPage = () => {
   );
 };
 
-ProjectListPage.whyDidYouRender = true;
+// ProjectListPage.whyDidYouRender = true;
 
 /* CSS */
 const Container = styled.div`
