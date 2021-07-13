@@ -7,62 +7,86 @@ import {
   Routes,
 } from "react-router-dom";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
-import { Row } from "components/lib";
+import { ButtonNoPadding, Row } from "components/lib";
 import { useAuth } from "./context/AuthContext";
 import { ProjectListPage } from "./pages/ProjectList";
 import { ProjectPage } from "./pages/Project";
 import { resetRoute } from "./utils";
+import { useState } from "react";
+import { ProjectModal } from "./pages/ProjectList/ProjectModal";
+import { ProjectPopover } from "./components/ProjectPopover";
 
 export const AuthenticatedApp = () => {
+  const [projectModalOpen, setProjectModalOpen] = useState(false);
+
   return (
     <Container>
-      <PageHeader />
+      <PageHeader setProjectModalOpen={setProjectModalOpen} />
       <Main>
         <Router>
           <Routes>
-            <Route path={"/projects"} element={<ProjectListPage />} />
+            <Route
+              path={"/projects"}
+              element={
+                <ProjectListPage setProjectModalOpen={setProjectModalOpen} />
+              }
+            />
             <Route path={"/projects/:projectId/*"} element={<ProjectPage />} />
             <Navigate to={"/projects"} />
           </Routes>
         </Router>
       </Main>
+      <ProjectModal
+        projectModalOpen={projectModalOpen}
+        onClose={() => setProjectModalOpen(false)}
+      />
     </Container>
   );
 };
 
-const PageHeader = () => {
-  const { user, logout } = useAuth();
-
+const PageHeader = (props: {
+  setProjectModalOpen: (isOpen: boolean) => void;
+}) => {
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
-        <Button type={"link"} onClick={resetRoute}>
+        <ButtonNoPadding type={"link"} onClick={resetRoute}>
           <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
-        </Button>
-        <h3>項目</h3>
-        <h3>用戶</h3>
+        </ButtonNoPadding>
+        <ProjectPopover setProjectModalOpen={props.setProjectModalOpen} />
+        <span>用戶</span>
       </HeaderLeft>
       <HeaderRight>
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item key={"logout"}>
-                <Button type={"link"} onClick={logout}>
-                  登出
-                </Button>
-              </Menu.Item>
-            </Menu>
-          }
-        >
-          <Button type={"link"} onClick={(e) => e.preventDefault()}>
-            Hi, {user?.name}
-          </Button>
-        </Dropdown>
+        <User />
       </HeaderRight>
     </Header>
   );
 };
 
+const User = () => {
+  const { user, logout } = useAuth();
+  return (
+    <Dropdown
+      overlay={
+        <Menu>
+          <Menu.Item key={"logout"}>
+            <Button type={"link"} onClick={logout}>
+              登出
+            </Button>
+          </Menu.Item>
+        </Menu>
+      }
+    >
+      <Button type={"link"} onClick={(e) => e.preventDefault()}>
+        Hi, {user?.name}
+      </Button>
+    </Dropdown>
+  );
+};
+
+AuthenticatedApp.whyDidYouRender = true;
+
+/* CSS */
 const Container = styled.div`
   display: grid;
   grid-template-rows: 6rem 1fr;

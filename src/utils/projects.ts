@@ -6,12 +6,12 @@ import { cleanObj } from "./index";
 import { useHttp } from "./http";
 
 /* 取得project的數據 */
-export const useProjects = (param: Partial<Project>) => {
+export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp();
   const { run, ...result } = useAsync<Project[]>();
 
   const fetchProjects = useCallback(
-    () => client("projects", { data: cleanObj(param) }),
+    () => client("projects", { data: cleanObj(param || {}) }),
     [param, client]
   );
 
@@ -19,6 +19,7 @@ export const useProjects = (param: Partial<Project>) => {
   useEffect(() => {
     run(fetchProjects(), { retry: fetchProjects });
   }, [param, run, fetchProjects]);
+
   return result;
 };
 

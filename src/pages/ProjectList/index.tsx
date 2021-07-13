@@ -7,8 +7,11 @@ import { Button, Typography } from "antd";
 import { useProjects } from "../../utils/projects";
 import { useUsers } from "../../utils/user";
 import { useProjectsSearchParams } from "./util";
+import { Row } from "../../components/lib";
 
-export const ProjectListPage = () => {
+export const ProjectListPage = (props: {
+  setProjectModalOpen: (isOpen: boolean) => void;
+}) => {
   // 變更title
   useDocumentTitle("項目列表", false);
 
@@ -26,8 +29,12 @@ export const ProjectListPage = () => {
 
   return (
     <Container>
-      <Button onClick={retry}>retry</Button>
-      <h1>項目列表</h1>
+      <Row between={true}>
+        <h1>項目列表</h1>
+        <Button onClick={() => props.setProjectModalOpen(true)}>
+          創建項目
+        </Button>
+      </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? (
         <Typography.Text type={"danger"}>{error.message}</Typography.Text>
@@ -37,6 +44,7 @@ export const ProjectListPage = () => {
         loading={isLoading}
         dataSource={list || []}
         users={users || []}
+        setProjectModalOpen={props.setProjectModalOpen}
       />
     </Container>
   );
