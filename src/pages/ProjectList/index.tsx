@@ -9,9 +9,7 @@ import { useUsers } from "../../utils/user";
 import { useProjectsSearchParams } from "./util";
 import { Row } from "../../components/lib";
 
-export const ProjectListPage = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void;
-}) => {
+export const ProjectListPage = (props: { projectButton: JSX.Element }) => {
   // 變更title
   useDocumentTitle("項目列表", false);
 
@@ -31,9 +29,7 @@ export const ProjectListPage = (props: {
     <Container>
       <Row between={true}>
         <h1>項目列表</h1>
-        <Button onClick={() => props.setProjectModalOpen(true)}>
-          創建項目
-        </Button>
+        {props.projectButton}
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? (
@@ -44,7 +40,7 @@ export const ProjectListPage = (props: {
         loading={isLoading}
         dataSource={list || []}
         users={users || []}
-        setProjectModalOpen={props.setProjectModalOpen}
+        projectButton={props.projectButton}
       />
     </Container>
   );

@@ -1,7 +1,7 @@
 /*
  * 用於異步獲取數據，並返回數據和請求狀態的鉤子
  * */
-import { useCallback, useState } from "react";
+import { useCallback, useReducer, useState } from "react";
 import { useMountedRef } from "./index";
 
 // 狀態的介面
@@ -22,6 +22,16 @@ const defaultConfig = {
   throwOnError: false,
 };
 
+// 根據組件狀態判斷是否執行dispatch的鉤子
+const useSafeDispatch = <T>(dispatch: (...args: T[]) => void) => {
+  // 用於判斷組件狀態的鉤子
+  const mountedRef = useMountedRef();
+  return useCallback(
+    (...args: T[]) => (mountedRef.current ? dispatch(...args) : void 0),
+    [mountedRef, dispatch]
+  );
+};
+
 export const useAsync = <T>(
   initialState?: State<T>,
   initialConfig?: typeof defaultConfig
@@ -31,35 +41,40 @@ export const useAsync = <T>(
     ...defaultConfig,
     ...initialConfig,
   };
-  // 初始化狀態
-  const [state, setState] = useState<State<T>>({
-    ...defaultInitialState,
-    ...initialState,
-  });
+  // 使用useReducer，reducer設置成將當前狀態與新傳入的狀態合併
+  const [state, dispatch] = useReducer(
+    (state: State<T>, action: Partial<State<T>>) => ({ ...state, ...action }),
+    {
+      // 初始化狀態
+      ...defaultInitialState,
+      ...initialState,
+    }
+  );
+
+  const safeDispatch = useSafeDispatch(dispatch);
+
   const [retry, setRetry] = useState(() => () => {});
-  // 用於判斷組件狀態的鉤子
-  const mountedRef = useMountedRef();
 
   // 請求成功時，設置data
   const setData = useCallback(
     (data: T) =>
-      setState({
+      safeDispatch({
         data,
         status: "success",
         error: null,
       }),
-    []
+    [safeDispatch]
   );
 
   // 請求失敗時，設置error
   const setError = useCallback(
     (error: Error) =>
-      setState({
+      safeDispatch({
         error,
         data: null,
         status: "error",
       }),
-    []
+    [safeDispatch]
   );
 
   // 異步請求，並根據情況改變狀態
@@ -70,7 +85,7 @@ export const useAsync = <T>(
         throw new Error("請傳入 Promise 類型的數據");
       }
       // 設置狀態為loading
-      setState((prevState) => ({ ...prevState, status: "loading" }));
+      safeDispatch({ status: "loading" });
 
       // 每次執行run時，就將這次的請求函數設置給retry
       setRetry(() => () => {
@@ -81,8 +96,7 @@ export const useAsync = <T>(
 
       return promise
         .then((data) => {
-          // 只有當組件正在掛載狀態，才進行setData
-          if (mountedRef.current) setData(data);
+          setData(data);
           return data;
         })
         .catch((error) => {
@@ -92,7 +106,7 @@ export const useAsync = <T>(
           return error;
         });
     },
-    [config.throwOnError, mountedRef, setData, setError]
+    [config.throwOnError, setData, setError]
   );
 
   return {
