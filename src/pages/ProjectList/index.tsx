@@ -7,9 +7,11 @@ import { Button, Typography } from "antd";
 import { useProjects } from "../../utils/projects";
 import { useUsers } from "../../utils/user";
 import { useProjectsSearchParams } from "./util";
-import { Row } from "../../components/lib";
+import { ButtonNoPadding, Row } from "../../components/lib";
+import { useDispatch } from "react-redux";
+import { projectListActions } from "./ProjectList.slice";
 
-export const ProjectListPage = (props: { projectButton: JSX.Element }) => {
+export const ProjectListPage = () => {
   // 變更title
   useDocumentTitle("項目列表", false);
 
@@ -24,12 +26,18 @@ export const ProjectListPage = (props: { projectButton: JSX.Element }) => {
     error,
   } = useProjects(useDebounce(param, 200));
   const { data: users } = useUsers();
+  const dispatch = useDispatch();
 
   return (
     <Container>
       <Row between={true}>
         <h1>項目列表</h1>
-        {props.projectButton}
+        <ButtonNoPadding
+          onClick={() => dispatch(projectListActions.openProjectModal())}
+          type={"link"}
+        >
+          創建項目
+        </ButtonNoPadding>
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? (
@@ -40,7 +48,6 @@ export const ProjectListPage = (props: { projectButton: JSX.Element }) => {
         loading={isLoading}
         dataSource={list || []}
         users={users || []}
-        projectButton={props.projectButton}
       />
     </Container>
   );
