@@ -7,7 +7,7 @@ import { Button, Typography } from "antd";
 import { useProjects } from "../../utils/projects";
 import { useUsers } from "../../utils/user";
 import { useProjectModal, useProjectsSearchParams } from "./util";
-import { ButtonNoPadding, Row } from "../../components/lib";
+import { ButtonNoPadding, ErrorBox, Row } from "../../components/lib";
 
 export const ProjectListPage = () => {
   // 變更title
@@ -16,12 +16,7 @@ export const ProjectListPage = () => {
   // 通過url獲取狀態參數，並將返回物件中的personId轉換成數字
   const [param, setParam] = useProjectsSearchParams();
   // 發送AJAX請求，獲取users 和 list 數據
-  const {
-    data: list,
-    retry,
-    isLoading,
-    error,
-  } = useProjects(useDebounce(param, 200));
+  const { data: list, isLoading, error } = useProjects(useDebounce(param, 200));
   const { data: users } = useUsers();
 
   return (
@@ -33,15 +28,8 @@ export const ProjectListPage = () => {
         </ButtonNoPadding>
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
-      {error ? (
-        <Typography.Text type={"danger"}>{error.message}</Typography.Text>
-      ) : null}
-      <List
-        refresh={retry}
-        loading={isLoading}
-        dataSource={list || []}
-        users={users || []}
-      />
+      <ErrorBox error={error} />
+      <List loading={isLoading} dataSource={list || []} users={users || []} />
     </Container>
   );
 };

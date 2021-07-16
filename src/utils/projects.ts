@@ -1,26 +1,16 @@
 /* 與project相關的工具函數 */
 import { useAsync } from "./use-async";
 import { Project } from "../pages/ProjectList/List";
-import { useCallback, useEffect } from "react";
-import { cleanObj } from "./index";
 import { useHttp } from "./http";
+import { useQuery } from "react-query";
 
 /* 取得project的數據 */
 export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp();
-  const { run, ...result } = useAsync<Project[]>();
-
-  const fetchProjects = useCallback(
-    () => client("projects", { data: cleanObj(param || {}) }),
-    [param, client]
+  console.log(param);
+  return useQuery<Project[]>(["projects", param], () =>
+    client("projects", { data: param })
   );
-
-  // 發送請求
-  useEffect(() => {
-    run(fetchProjects(), { retry: fetchProjects });
-  }, [param, run, fetchProjects]);
-
-  return result;
 };
 
 /* 發送添加project的請求 */

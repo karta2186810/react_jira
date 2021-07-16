@@ -1,6 +1,5 @@
 import { useUrlQueryParam } from "../../utils/url";
-import { useCallback, useMemo } from "react";
-import { set } from "husky";
+import { useMemo } from "react";
 
 // 從URL獲取projectList中需要的參數
 export const useProjectsSearchParams = () => {
@@ -18,14 +17,8 @@ export const useProjectModal = () => {
   const [{ projectCreate }, setProjectCreate] = useUrlQueryParam([
     "projectCreate",
   ]);
-  const open = useCallback(
-    () => setProjectCreate({ projectCreate: true }),
-    [setProjectCreate]
-  );
-  const close = useCallback(
-    () => setProjectCreate({ projectCreate: undefined }),
-    [setProjectCreate]
-  );
+  const open = () => setProjectCreate({ projectCreate: true });
+  const close = () => setProjectCreate({ projectCreate: undefined });
 
   return {
     projectCreate: projectCreate === "true",

@@ -6,6 +6,7 @@ import styled from "@emotion/styled";
 import logo from "assets/logo.svg";
 import left from "assets/left.svg";
 import right from "assets/right.svg";
+import { ErrorBox } from "../components/lib";
 
 /* Component */
 export const UnauthenticatedApp = () => {
@@ -18,9 +19,7 @@ export const UnauthenticatedApp = () => {
       <Header />
       <ShadowCard>
         <Title>{isRegister ? "註冊" : "登入"}</Title>
-        {error ? (
-          <Typography.Text type={"danger"}>{error.message}</Typography.Text>
-        ) : null}
+        <ErrorBox error={error} />
         {isRegister ? (
           <RegisterPage onError={setError} />
         ) : (

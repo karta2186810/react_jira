@@ -42,9 +42,18 @@ export const FullPageLoading = () => {
 export const FullPageErrorFallback = ({ error }: { error: Error | null }) => {
   return (
     <FullPage>
-      <Typography.Text type={"danger"}>{error?.message}</Typography.Text>
+      <ErrorBox error={error} />
     </FullPage>
   );
+};
+
+const isError = (value: any): value is Error => value?.message;
+
+export const ErrorBox = ({ error }: { error: unknown }) => {
+  if (isError(error)) {
+    return <Typography.Text type={"danger"}>{error?.message}</Typography.Text>;
+  }
+  return null;
 };
 
 export const ButtonNoPadding = styled(Button)`
