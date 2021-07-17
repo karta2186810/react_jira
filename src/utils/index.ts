@@ -20,9 +20,9 @@ export const cleanObj = (obj: { [key: string]: unknown }) => {
 };
 
 // 模擬onmount的hook
-export const useMount = (cb: () => void) => {
+export const useMount = (callback: () => void) => {
   useEffect(() => {
-    cb();
+    callback();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 };
@@ -71,6 +71,18 @@ export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
 
 // 用於重製路由狀態的函數
 export const resetRoute = () => (window.location.href = window.location.origin);
+
+// 傳入物件和鍵陣列，返回想要查找的鍵構成的物件
+export const subset = <O extends { [key: string]: unknown }, K extends keyof O>(
+  obj: O,
+  keys: K[]
+) => {
+  const filterEntries = Object.entries(obj).filter(([key]) =>
+    keys.includes(key as K)
+  );
+
+  return Object.fromEntries(filterEntries) as Pick<O, K>;
+};
 
 // 返回組件的掛載狀態，如果尚未掛載或已卸載，返回false，否則返回true
 export const useMountedRef = () => {
