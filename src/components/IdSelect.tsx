@@ -11,8 +11,8 @@ interface IdSelectProps
     SelectProps,
     "value" | "onChange" | "defaultOptionName" | "options"
   > {
-  value: Raw | null | undefined;
-  onChange: (value?: number) => void;
+  value?: Raw | null | undefined;
+  onChange?: (value?: number) => void;
   defaultOptionName?: string;
   options?: { name: string; id: number }[];
 }
@@ -34,7 +34,7 @@ export const IdSelect = (props: IdSelectProps) => {
       {...restProps}
       value={options?.length ? toNumber(value) : 0}
       // antd的onChange會自動接收到value不用再展開
-      onChange={(value) => onChange(toNumber(value) || undefined)}
+      onChange={(value) => onChange?.(toNumber(value) || undefined)}
     >
       {defaultOptionName ? (
         <Select.Option value={0}>{defaultOptionName}</Select.Option>
