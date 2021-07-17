@@ -1,11 +1,11 @@
-import { Dropdown, Menu, Table, TableProps } from "antd";
+import { Dropdown, Menu, Table, TableProps, Modal } from "antd";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { User } from "./SearchPanel";
 import { Pin } from "../../components/Pin";
-import { useEditProject } from "../../utils/projects";
+import { useDeleteProject, useEditProject } from "../../utils/projects";
 import { ButtonNoPadding } from "../../components/lib";
-import { useProjectModal } from "./util";
+import { useProjectModal, useProjectsQueryKey } from "./util";
 
 export interface Project {
   id: number;
@@ -20,11 +20,9 @@ interface ListProps extends TableProps<Project> {
 }
 
 export const List = ({ users, ...props }: ListProps) => {
-  const { mutate } = useEditProject();
-  const { startEdit } = useProjectModal();
+  const { mutate } = useEditProject(useProjectsQueryKey());
 
   const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
-  const editProject = (id: number) => () => startEdit(id);
 
   return (
     <Table
@@ -81,23 +79,47 @@ export const List = ({ users, ...props }: ListProps) => {
         {
           title: "操作",
           render(value, project) {
-            return (
-              <Dropdown
-                overlay={
-                  <Menu>
-                    <Menu.Item onClick={editProject(project.id)} key={"edit"}>
-                      編輯
-                    </Menu.Item>
-                    <Menu.Item key={"delete"}>刪除</Menu.Item>
-                  </Menu>
-                }
-              >
-                <ButtonNoPadding type={"link"}>...</ButtonNoPadding>
-              </Dropdown>
-            );
+            return <More project={project} />;
           },
         },
       ]}
     />
+  );
+};
+
+const More = ({ project }: { project: Project }) => {
+  const { startEdit } = useProjectModal();
+  const editProject = (id: number) => () => startEdit(id);
+  const { mutate: deleteProject } = useDeleteProject(useProjectsQueryKey());
+
+  const confirmDeleteProject = (id: number) => {
+    return Modal.confirm({
+      title: "確定刪除此項目?",
+      content: "點擊確定，刪除此項目",
+      okText: "確定",
+      onOk() {
+        deleteProject({ id });
+      },
+    });
+  };
+
+  return (
+    <Dropdown
+      overlay={
+        <Menu>
+          <Menu.Item onClick={editProject(project.id)} key={"edit"}>
+            編輯
+          </Menu.Item>
+          <Menu.Item
+            key={"delete"}
+            onClick={() => confirmDeleteProject(project.id)}
+          >
+            刪除
+          </Menu.Item>
+        </Menu>
+      }
+    >
+      <ButtonNoPadding type={"link"}>...</ButtonNoPadding>
+    </Dropdown>
   );
 };

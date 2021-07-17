@@ -34,8 +34,6 @@ export const ProjectListPage = () => {
   );
 };
 
-// ProjectListPage.whyDidYouRender = true;
-
 /* CSS */
 const Container = styled.div`
   padding: 3.2rem;
