@@ -42,7 +42,7 @@ const PageHeader = () => {
           <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
         </ButtonNoPadding>
         <ProjectPopover />
-        <span>用戶</span>
+        <span style={{ fontWeight: "bold" }}>用戶</span>
       </HeaderLeft>
       <HeaderRight>
         <User />
@@ -84,6 +84,14 @@ const Header = styled(Row)`
   padding: 3.2rem;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
   z-index: 1;
+  span {
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s;
+    &:hover {
+      color: rgb(38, 132, 255);
+    }
+  }
 `;
 const HeaderLeft = styled(Row)``;
 const HeaderRight = styled.div``;

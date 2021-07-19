@@ -2,11 +2,11 @@
  * 用於獲取ProjectList中的user數據的鉤子
  * */
 
-import { User } from "../pages/ProjectList/SearchPanel";
 import { useHttp } from "./http";
 import { useAsync } from "./use-async";
 import { useEffect } from "react";
 import { cleanObj } from "./index";
+import { User } from "../types/user";
 
 export const useUsers = (param?: Partial<User>) => {
   const client = useHttp();

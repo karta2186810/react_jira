@@ -30,7 +30,7 @@ export const ProjectPopover = () => {
 
   return (
     <Popover placement={"bottom"} content={content}>
-      <span>項目</span>
+      <span style={{ fontWeight: "bold" }}>項目</span>
     </Popover>
   );
 };

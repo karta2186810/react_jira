@@ -3,12 +3,13 @@
  * */
 import React, { useContext, ReactNode } from "react";
 import * as auth from "auth-prodiver";
-import { User } from "../pages/ProjectList/SearchPanel";
 import { http } from "../utils/http";
 import { useMount } from "../utils";
 import { useAsync } from "../utils/use-async";
 import { FullPageErrorFallback, FullPageLoading } from "../components/lib";
 import { DevTools } from "jira-dev-tool";
+import { useQueryClient } from "react-query";
+import { User } from "../types/user";
 
 // 表單內容的interface
 interface AuthForm {
@@ -52,10 +53,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     run,
   } = useAsync<User | null>();
 
+  const queryClient = useQueryClient();
   // 發送Auth有關的請求，並設置AuthContext的狀態
   const login = (form: AuthForm) => auth.login(form).then(setUser);
   const register = (form: AuthForm) => auth.register(form).then(setUser);
-  const logout = () => auth.logout().then(() => setUser(null));
+  const logout = () =>
+    auth.logout().then(() => {
+      setUser(null); // 重製user
+      queryClient.clear(); // 清除 react-query 的 cache
+    });
 
   // 嘗試從localStorage取得token，並向 '/me' 發送請求
   useMount(() => {

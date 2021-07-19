@@ -1,13 +1,12 @@
+/*
+操作URL狀態的hooks
+*/
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { cleanObj, subset } from "./index";
 
-/*
- * 獲取URL中的參數，返回帶有該參數作為key的物件，和設置URL參數的方法
- * */
-
+// 傳入想要獲取的key，返回URL中的參數組成的物件，和設置URL參數的鉤子
 export const useUrlQueryParam = <K extends string>(keys: K[]) => {
-  // 獲取URL中的參數
   const [searchParams] = useSearchParams();
   const setSearchParams = useSetUrlSearchParam();
   const [stateKeys] = useState(keys);
@@ -25,6 +24,7 @@ export const useUrlQueryParam = <K extends string>(keys: K[]) => {
   ] as const;
 };
 
+// 通用的設置url參數的鉤子
 export const useSetUrlSearchParam = () => {
   const [searchParams, setSearchParam] = useSearchParams();
   return (params: { [key: string]: unknown }) => {

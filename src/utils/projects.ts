@@ -1,5 +1,4 @@
-/* 與project相關的工具函數 */
-import { Project } from "../pages/ProjectList/List";
+/* 與project列表操作相關的hooks */
 import { useHttp } from "./http";
 import { QueryKey, useMutation, useQuery } from "react-query";
 import {
@@ -7,8 +6,9 @@ import {
   useDeleteConfig,
   useEditConfig,
 } from "./useOptimisticOptions";
+import { Project } from "../types/project";
 
-/* 取得project的數據 */
+/* 獲取project列表的hook */
 export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp();
   return useQuery<Project[]>(["projects", param], () =>
@@ -16,7 +16,7 @@ export const useProjects = (param?: Partial<Project>) => {
   );
 };
 
-/* 發送添加project的請求 */
+/* 添加project的hook */
 export const useAddProject = (queryKey: QueryKey) => {
   const client = useHttp();
 
@@ -30,7 +30,7 @@ export const useAddProject = (queryKey: QueryKey) => {
   );
 };
 
-/* 發送編輯project的請求 */
+/* 編輯單個project的hook */
 export const useEditProject = (queryKey: QueryKey) => {
   const client = useHttp();
   return useMutation(
@@ -43,6 +43,7 @@ export const useEditProject = (queryKey: QueryKey) => {
   );
 };
 
+/* 刪除project的hook */
 export const useDeleteProject = (queryKey: QueryKey) => {
   const client = useHttp();
   return useMutation(
@@ -57,7 +58,7 @@ export const useDeleteProject = (queryKey: QueryKey) => {
 // 取得單個project的詳情
 export const useProject = (id?: number) => {
   const client = useHttp();
-  return useQuery<Project[]>(
+  return useQuery<Project>(
     ["project", { id }],
     () => client(`projects/${id}`),
     {
