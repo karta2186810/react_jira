@@ -8,6 +8,7 @@ import { TaskTypeSelect } from "../../components/TaskTypeSelect";
 export const SearchPanel = () => {
   const searchParams = useTasksSearchParams();
   const setSearchParams = useSetUrlSearchParam();
+  // 透過URL重製狀態
   const reset = () => {
     setSearchParams({
       typeId: undefined,

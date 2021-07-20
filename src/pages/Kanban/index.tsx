@@ -4,6 +4,7 @@ import { useKanban } from "../../utils/kanban";
 import { useKanbanSearchParams, useProjectInUrl } from "./util";
 import { KanbanColumn } from "./KanbanColumn";
 import { SearchPanel } from "./SearchPanel";
+import { PageContainer } from "../../components/lib";
 
 export const KanbanPage = () => {
   useDocumentTitle("看板列表");
@@ -12,7 +13,7 @@ export const KanbanPage = () => {
   const { data: kanbans } = useKanban(useKanbanSearchParams());
 
   return (
-    <div>
+    <PageContainer>
       <h1>{currentProject?.name}看板</h1>
       <SearchPanel />
       <ColumnsContainer>
@@ -20,12 +21,15 @@ export const KanbanPage = () => {
           <KanbanColumn kanban={kanban} key={kanban.id} />
         ))}
       </ColumnsContainer>
-    </div>
+    </PageContainer>
   );
 };
 
 const ColumnsContainer = styled.div`
   display: flex;
-  overflow: hidden;
-  margin-right: 2rem;
+  overflow-x: scroll;
+  flex: 1;
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;

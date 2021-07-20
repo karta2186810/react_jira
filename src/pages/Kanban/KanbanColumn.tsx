@@ -17,8 +17,11 @@ const TaskTypeIcon = ({ id }: { id: number }) => {
 };
 
 export const KanbanColumn = ({ kanban }: { kanban: Kanban }) => {
+  // 取得URL中的參數並發送AJAX
   const { data: allTasks } = useTasks(useTasksSearchParams());
+  // 篩選對應看板的task
   const tasks = allTasks?.filter((tasks) => tasks.kanbanId === kanban.id);
+
   return (
     <Container>
       <h3 style={{ fontWeight: "bold" }}>{kanban.name}</h3>
