@@ -11,9 +11,10 @@ export const useConfig = (
     onMutate: async (target: any) => {
       await queryClient.cancelQueries(queryKey);
       const previousItems = queryClient.getQueryData(queryKey);
-      queryClient.setQueryData(queryKey, (old?: any[]) => {
-        return callback(target, old);
-      });
+      queryClient.setQueryData(queryKey, (old?: any[]) =>
+        callback(target, old)
+      );
+
       return { previousItems };
     },
     onError: (error: any, newItem: any, context: any) => {

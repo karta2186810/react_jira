@@ -12,7 +12,6 @@ import { useAuth } from "./context/AuthContext";
 import { ProjectListPage } from "./pages/ProjectList";
 import { ProjectPage } from "./pages/Project";
 import { resetRoute } from "./utils";
-import { useState } from "react";
 import { ProjectModal } from "./pages/ProjectList/ProjectModal";
 import { ProjectPopover } from "./components/ProjectPopover";
 
@@ -96,6 +95,7 @@ const Header = styled(Row)`
 const HeaderLeft = styled(Row)``;
 const HeaderRight = styled.div``;
 const Main = styled.main`
+  width: 100%;
   display: flex;
   overflow: hidden;
 `;

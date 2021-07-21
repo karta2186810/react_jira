@@ -1,11 +1,20 @@
 import styled from "@emotion/styled";
-import { Card } from "antd";
+import { Button, Card, Dropdown, Menu, Modal } from "antd";
 import { Kanban } from "../../types/kanban";
 import { useTasks } from "../../utils/task";
-import { useTasksSearchParams } from "./util";
+import {
+  useKanbansQueryKey,
+  useTasksModal,
+  useTasksSearchParams,
+} from "./util";
 import { useTaskTypes } from "../../utils/task-type";
 import taskIcon from "assets/task.svg";
 import bugIcon from "assets/bug.svg";
+import { CreateTask } from "./CreateTask";
+import { Task } from "../../types/task";
+import { Mark } from "../../components/Mark";
+import { useDeleteKanban } from "../../utils/kanban";
+import { Row } from "../../components/lib";
 
 const TaskTypeIcon = ({ id }: { id: number }) => {
   const { data: taskTypes } = useTaskTypes();
@@ -13,7 +22,54 @@ const TaskTypeIcon = ({ id }: { id: number }) => {
 
   if (!name) return null;
 
-  return <img src={name === "task" ? taskIcon : bugIcon} />;
+  return <img alt={"task-icon"} src={name === "task" ? taskIcon : bugIcon} />;
+};
+
+const TaskCard = ({ task }: { task: Task }) => {
+  const { name: keyword } = useTasksSearchParams();
+  const { startEdit } = useTasksModal();
+
+  return (
+    <Card
+      onClick={() => startEdit(task.id)}
+      style={{ marginBottom: "0.5rem" }}
+      key={task.id}
+    >
+      <Mark name={task.name} keyword={keyword} />
+      <br />
+      <TaskTypeIcon id={task.typeId} />
+    </Card>
+  );
+};
+
+const More = ({ kanban }: { kanban: Kanban }) => {
+  const { mutateAsync: deleteKanban } = useDeleteKanban(useKanbansQueryKey());
+  const startDelete = () => {
+    Modal.confirm({
+      okText: "確定",
+      cancelText: "取消",
+      title: "確定刪除看板嗎?",
+      onOk() {
+        return deleteKanban({ id: kanban.id });
+      },
+    });
+  };
+
+  const overlay = (
+    <Menu>
+      <Menu.Item>
+        <Button type={"link"} onClick={startDelete}>
+          刪除
+        </Button>
+      </Menu.Item>
+    </Menu>
+  );
+
+  return (
+    <Dropdown overlay={overlay}>
+      <Button type={"link"}>...</Button>
+    </Dropdown>
+  );
 };
 
 export const KanbanColumn = ({ kanban }: { kanban: Kanban }) => {
@@ -24,20 +80,22 @@ export const KanbanColumn = ({ kanban }: { kanban: Kanban }) => {
 
   return (
     <Container>
-      <h3 style={{ fontWeight: "bold" }}>{kanban.name}</h3>
+      <Row between={true}>
+        <h3 style={{ fontWeight: "bold" }}>{kanban.name}</h3>
+        <More kanban={kanban} />
+      </Row>
       <TasksContainer>
         {tasks?.map((task) => (
-          <Card style={{ marginBottom: "0.5rem" }} key={task.id}>
-            <div>{task.name}</div>
-            <TaskTypeIcon id={task.typeId} />
-          </Card>
+          <TaskCard task={task} key={task.id} />
         ))}
+        <CreateTask kanbanId={kanban.id} />
       </TasksContainer>
     </Container>
   );
 };
 
-const Container = styled.div`
+/* CSS */
+export const Container = styled.div`
   min-width: 27rem;
   border-radius: 6px;
   background-color: rgba(244, 245, 247);

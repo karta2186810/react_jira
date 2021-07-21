@@ -7,7 +7,12 @@ import { Button, Typography } from "antd";
 import { useProjects } from "../../utils/projects";
 import { useUsers } from "../../utils/user";
 import { useProjectModal, useProjectsSearchParams } from "./util";
-import { ButtonNoPadding, ErrorBox, Row } from "../../components/lib";
+import {
+  ButtonNoPadding,
+  ErrorBox,
+  PageContainer,
+  Row,
+} from "../../components/lib";
 
 export const ProjectListPage = () => {
   // 變更title
@@ -20,7 +25,7 @@ export const ProjectListPage = () => {
   const { data: users } = useUsers();
 
   return (
-    <Container>
+    <PageContainer>
       <Row between={true}>
         <h1>項目列表</h1>
         <ButtonNoPadding onClick={open} type={"link"}>
@@ -30,11 +35,6 @@ export const ProjectListPage = () => {
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       <ErrorBox error={error} />
       <List loading={isLoading} dataSource={list || []} users={users || []} />
-    </Container>
+    </PageContainer>
   );
 };
-
-/* CSS */
-const Container = styled.div`
-  padding: 3.2rem;
-`;
