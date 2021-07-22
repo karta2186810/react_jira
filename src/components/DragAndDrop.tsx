@@ -36,7 +36,12 @@ type DropChildProps = Partial<
 
 // 使用forwardRef使自定義組件可以使用ref進行綁定
 export const DropChild = React.forwardRef<HTMLDivElement, DropChildProps>(
-  (props, ref) => <div ref={ref} {...props} />
+  ({ children, ...props }, ref) => (
+    <div ref={ref} {...props}>
+      {children}
+      {props.provided?.placeholder}
+    </div>
+  )
 );
 
 type DragProps = Omit<DraggableProps, "children"> & { children: ReactNode };

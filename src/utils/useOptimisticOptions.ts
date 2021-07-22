@@ -1,4 +1,6 @@
 import { QueryKey, useQueryClient } from "react-query";
+import { reorder } from "./reorder";
+import { Task } from "../types/task";
 
 // 生成樂觀更新的 Config 物件的函數
 export const useConfig = (
@@ -29,6 +31,7 @@ export const useDeleteConfig = (queryKey: QueryKey) => {
     (target, old) => old?.filter((item) => item.id !== target.id) || []
   );
 };
+
 export const useEditConfig = (queryKey: QueryKey) => {
   return useConfig(
     queryKey,
@@ -38,6 +41,20 @@ export const useEditConfig = (queryKey: QueryKey) => {
       ) || []
   );
 };
+
 export const useAddConfig = (queryKey: QueryKey) => {
   return useConfig(queryKey, (target, old) => (old ? [...old, target] : []));
 };
+
+export const useReorderKanbanConfig = (queryKey: QueryKey) =>
+  useConfig(queryKey, (target, old) => reorder({ list: old, ...target }));
+
+export const useReorderTaskConfig = (queryKey: QueryKey) =>
+  useConfig(queryKey, (target, old) => {
+    const orderedList = reorder({ list: old, ...target }) as Task[];
+    return orderedList.map((item) =>
+      item.id === target.fromId
+        ? { ...item, kanbanId: target.toKanbanId }
+        : item
+    );
+  });

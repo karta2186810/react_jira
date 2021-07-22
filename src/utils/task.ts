@@ -5,8 +5,10 @@ import {
   useAddConfig,
   useDeleteConfig,
   useEditConfig,
+  useReorderTaskConfig,
 } from "./useOptimisticOptions";
 import { useDebounce } from "./index";
+import { SortProps } from "./kanban";
 
 // AJAX，取得task列表的hook
 export const useTasks = (params?: Partial<Task>) => {
@@ -60,5 +62,17 @@ export const useDeleteTask = (queryKey: QueryKey) => {
         method: "DELETE",
       }),
     useDeleteConfig(queryKey)
+  );
+};
+
+export const useReorderTask = (queryKey: QueryKey) => {
+  const client = useHttp();
+  return useMutation(
+    (params: SortProps) =>
+      client("tasks/reorder", {
+        method: "POST",
+        data: params,
+      }),
+    useReorderTaskConfig(queryKey)
   );
 };
