@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useProject } from "../../utils/projects";
 import { useUrlQueryParam } from "../../utils/url";
 import { useCallback, useMemo } from "react";

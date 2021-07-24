@@ -1,6 +1,5 @@
 import { useSetUrlSearchParam, useUrlQueryParam } from "../../utils/url";
 import { useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
 import { useProject } from "../../utils/projects";
 
 // 從URL獲取projectList中需要的參數

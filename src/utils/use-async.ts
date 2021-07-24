@@ -106,7 +106,7 @@ export const useAsync = <T>(
           return error;
         });
     },
-    [config.throwOnError, setData, setError]
+    [config.throwOnError, safeDispatch, setData, setError]
   );
 
   return {

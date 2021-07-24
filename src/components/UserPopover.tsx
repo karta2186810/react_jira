@@ -1,6 +1,5 @@
 import { Popover, Typography, List, Divider } from "antd";
 import styled from "@emotion/styled";
-import { ButtonNoPadding } from "./lib";
 import { useUsers } from "../utils/user";
 
 export const UserPopover = () => {
