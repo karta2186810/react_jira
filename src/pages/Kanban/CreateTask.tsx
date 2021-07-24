@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAddTask } from "../../utils/task";
 import { useProjectIdInUrl, useTasksQueryKey } from "./util";
 import { Card, Input } from "antd";
+import styled from "@emotion/styled";
 
 export const CreateTask = ({ kanbanId }: { kanbanId: number }) => {
   // 輸入框的內容
@@ -29,11 +30,7 @@ export const CreateTask = ({ kanbanId }: { kanbanId: number }) => {
   }, [inputMode]);
 
   if (!inputMode) {
-    return (
-      <div onClick={toggle} style={{ fontWeight: "bold" }}>
-        +創建事務
-      </div>
-    );
+    return <CreateButton onClick={toggle}>創建事務</CreateButton>;
   }
 
   return (
@@ -49,3 +46,14 @@ export const CreateTask = ({ kanbanId }: { kanbanId: number }) => {
     </Card>
   );
 };
+
+const CreateButton = styled.div`
+  text-align: center;
+  padding: 0 1.6rem;
+  border-radius: 2px;
+  color: rgb(38, 132, 255);
+  border: 1px solid rgb(38, 132, 255);
+  width: 16rem;
+  margin: 1.6rem auto;
+  cursor: pointer;
+`;
