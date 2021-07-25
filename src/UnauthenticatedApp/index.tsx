@@ -9,7 +9,7 @@ import right from "assets/right.svg";
 import { ErrorBox } from "../components/lib";
 
 /* Component */
-export const UnauthenticatedApp = () => {
+export default function UnauthenticatedApp() {
   const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState<null | Error>(null);
 
@@ -40,7 +40,7 @@ export const UnauthenticatedApp = () => {
       </ShadowCard>
     </Container>
   );
-};
+}
 
 /* CSS */
 const Background = styled.div`

@@ -2,16 +2,20 @@ import React from "react";
 // import { ProjectListPage } from "./pages/ProjectList";
 import "./App.css";
 import { useAuth } from "./context/AuthContext";
-import { AuthenticatedApp } from "./AuthenticatedApp";
-import { UnauthenticatedApp } from "./UnauthenticatedApp";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { FullPageErrorFallback } from "./components/lib";
+import { FullPageErrorFallback, FullPageLoading } from "./components/lib";
+
+const AuthenticatedApp = React.lazy(() => import("./AuthenticatedApp"));
+const UnauthenticatedApp = React.lazy(() => import("./UnauthenticatedApp"));
+
 function App() {
   const { user } = useAuth();
   return (
     <div className="App">
       <ErrorBoundary fallbackRender={FullPageErrorFallback}>
-        {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
+        <React.Suspense fallback={<FullPageLoading />}>
+          {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
+        </React.Suspense>
       </ErrorBoundary>
     </div>
   );

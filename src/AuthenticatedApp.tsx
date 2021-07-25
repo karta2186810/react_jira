@@ -16,7 +16,7 @@ import { ProjectModal } from "./pages/ProjectList/ProjectModal";
 import { ProjectPopover } from "./components/ProjectPopover";
 import { UserPopover } from "./components/UserPopover";
 
-export const AuthenticatedApp = () => {
+export default function AuthenticatedApp() {
   return (
     <Container>
       <Router>
@@ -32,7 +32,7 @@ export const AuthenticatedApp = () => {
       </Router>
     </Container>
   );
-};
+}
 
 const PageHeader = () => {
   return (

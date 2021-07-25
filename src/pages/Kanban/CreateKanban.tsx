@@ -10,6 +10,7 @@ export const CreateKanban = () => {
   const { mutateAsync: addKanban } = useAddKanban(useKanbansQueryKey());
 
   const submit = async () => {
+    if (!name.trim()) return;
     await addKanban({ name, projectId });
     setName("");
   };

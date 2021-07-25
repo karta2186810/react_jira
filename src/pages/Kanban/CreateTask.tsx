@@ -16,6 +16,10 @@ export const CreateTask = ({ kanbanId }: { kanbanId: number }) => {
 
   // 發送添加task的請求
   const submit = async () => {
+    if (!name.trim()) {
+      setInputMode(false);
+      return;
+    }
     await addTask({ projectId, name, kanbanId });
     setInputMode(false);
     setName("");
