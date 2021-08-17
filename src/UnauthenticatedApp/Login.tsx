@@ -31,7 +31,7 @@ export const LoginPage = ({ onError }: { onError: (error: Error) => void }) => {
         name={"password"}
         rules={[{ required: true, message: "密碼不能為空" }]}
       >
-        <Input type="text" id={"password"} placeholder={"密碼"} />
+        <Input type="password" id={"password"} placeholder={"密碼"} />
       </Form.Item>
       <Form.Item>
         <LongButton loading={isLoading} htmlType={"submit"} type={"primary"}>

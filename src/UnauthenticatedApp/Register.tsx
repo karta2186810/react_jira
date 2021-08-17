@@ -47,7 +47,7 @@ export const RegisterPage = ({
         name={"cpassword"}
         rules={[{ required: true, message: "請輸入確認密碼" }]}
       >
-        <Input type="text" id={"cpassword"} placeholder={"確認密碼"} />
+        <Input type="password" id={"cpassword"} placeholder={"確認密碼"} />
       </Form.Item>
       <Form.Item>
         <LongButton loading={isLoading} htmlType={"submit"} type={"primary"}>
